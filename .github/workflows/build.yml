@@ -1,4 +1,4 @@
-name: Holoscan Build Test
+name: Holoscan CI Failure Analyzer Demo
 
 on:
   push:
@@ -7,22 +7,41 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  fail_build:
+    name: Build without CUDA (Expected Failure)
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install base dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake build-essential ninja-build
 
-      - name: Configure CMake
+      - name: Configure CMake (this will fail)
+        run: cmake -S . -B build -GNinja
+
+      - name: Build (won’t reach here due to failure above)
+        run: cmake --build build
+
+  pass_build:
+    name: Build with CUDA (Expected Success)
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install base dependencies + CUDA
         run: |
-          cmake -S . -B build -GNinja
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential ninja-build nvidia-cuda-toolkit
+          echo "CUDAToolkit_ROOT=/usr/lib/cuda" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        run: cmake -S . -B build -GNinja
 
       - name: Build
-        run: |
-          cmake --build build
+        run: cmake --build build
