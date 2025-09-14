@@ -49,7 +49,7 @@ list(APPEND CMAKE_MODULE_PATH "${HOLOSCAN_TOP}/cmake/modules")
 list(APPEND CMAKE_PREFIX_PATH "${HOLOSCAN_TOP}/cmake/deps")
 
 # Setup rapids-cmake
-include(SetupRapidsCMake_DOESNOTEXIST)
+include(SetupRapidsCMake)
 
 # ##############################################################################
 # # Project definition
