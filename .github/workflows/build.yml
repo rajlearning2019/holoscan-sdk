@@ -1,0 +1,28 @@
+name: Holoscan Build Test
+
+on:
+  push:
+    branches: [ main, ci-failure-sim ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential ninja-build
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -GNinja
+
+      - name: Build
+        run: |
+          cmake --build build
